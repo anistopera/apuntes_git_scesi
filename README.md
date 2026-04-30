@@ -153,3 +153,34 @@ El comando `git checkout` permite desplazar el HEAD (tu "lector" actual) hacia u
 - **Buenas prácticas:** Antes de viajar al pasado, debes limpiar tu directorio de trabajo asegurándote de haber hecho commit de tus cambios actuales; de lo contrario, Git no te dejará viajar.
 
 ---
+## Clase 5
+
+### 1.Conceptos Técnicos: Ramas (Branches)
+
+Las ramas son bifurcaciones del estado del código que crean un nuevo camino paralelo. Permiten a varias personas trabajar al mismo tiempo sin arruinar el código principal original.
+
+**Comandos de Ramas que debes saber para el examen:**
+
+- `git branch`: Lista las ramas disponibles y muestra en cuál está el HEAD (tu ubicación actual).
+- `git branch <rama>`: Crea una nueva rama a partir de la rama en la que estás posicionado.
+- `git checkout <rama>` o `git switch <rama>`: Te cambia a la rama especificada (tu directorio de trabajo debe estar limpio sin cambios sin guardar).
+- `git checkout -b <rama>`: Crea la rama y te mueve a ella directamente en un solo paso.
+- `git branch -D <rama>`: Borra la rama especificada.
+
+---
+
+### 2. GitFlow Básico (El estándar de la SCESI)
+
+GitFlow es un marco de trabajo que establece reglas para usar las ramas de manera ordenada. El Auxi hizo mucho énfasis en que evalúa que usen esta estructura en sus proyectos:
+
+**Ramas Principales:**
+
+- `main` (o master): Es sagrada. Su propósito es contener el código que se encuentra en producción. Aquí solo va el código estable y final. Jamás muere.
+- `develop`: Es la rama de "pre-producción". Aquí se integran las nuevas características que funcionarán en el futuro. Es el entorno del día a día del equipo. Jamás muere.
+
+**Ramas de Apoyo:**
+
+- `feature/*`: Se usa para trabajar en una nueva característica (ej. `feature/sum-function`).
+    - **Regla:** Nacen de `develop`, y cuando se terminan, se fusionan de vuelta en `develop` y se eliminan. Jamás uses espacios en los nombres, usa guiones o barras bajas.
+- `release/*`: Se usa cuando preparas el lanzamiento de una nueva versión (fase de pruebas o QA). Nacen de `develop` y mueren en `main` y `develop`.
+- `hotfix/*`: Se usa para arreglar un error crítico o "incendio" directamente en producción. Nacen directo de `main` y, al arreglar el bug, mueren fusionándose en `main` y en `develop`.
