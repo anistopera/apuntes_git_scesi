@@ -23,6 +23,7 @@ Todo repositorio debería tener al menos dos archivos:
 - `README.md`: Es el archivo de presentación, el manual de usuario o la explicación de qué hace tu repositorio. Usa el formato *Markdown*.
 - `.gitignore`: Sirve para ignorar archivos sensibles o basura que no quieres subir a tu historial.
 
+---
 
 ## Clase 2
 ### Los 3 Estados de Git
@@ -66,6 +67,8 @@ Estado de los archivos: Pasan a estar Committed (confirmados/guardados).
     - `style`: Cambios de formato (espacios, comas) que no afectan el código.
     - `test`: Añadir o corregir pruebas.
 
+---
+
 ## Clase 3
 ### Conexión Remota (SSH vs HTTPS)
 Es mejor configurar SSH para no tener que ingresar credenciales cada vez que hacemos un `git push`.
@@ -104,5 +107,49 @@ Si ya tienes tu repositorio local (el de tus apuntes) y creaste uno vacío en Gi
 - Solución a error HTTPS: Si clonaste un repo por error con HTTPS y te pide contraseña, puedes cambiarlo a SSH usando: git remote set-url origin "git@github.com:TuUser/TuRepo.git".
 - Límite de tamaño: El peso máximo de un archivo que puedes subir en un commit a GitHub es de 100 MB. Si intentas subir algo más pesado (como carpetas de node_modules o bases de datos), GitHub lo rechazará. Por eso es vital usar el .gitignore.
 
+---
 
+## Clase 4
 
+### 1. Gestión de Conexiones: Git Remote
+
+Cuando trabajas con repositorios en la nube (como GitHub), necesitas decirle a tu Git local a dónde enviar o de dónde traer la información.
+
+- **Ver conexiones:** `git remote -v` te permite ver las URLs exactas donde apunta tu repositorio.
+- **Vincular:** `git remote add <apodo> "url"` vincula tu repositorio local con uno en la nube. El apodo por defecto casi siempre es `origin`.
+- **Cambiar conexión:** `git remote set-url <apodo> "url"` cambia la URL a la que apunta tu repositorio. El Auxi lo usó en clase para arreglar el error de haber clonado por HTTPS, cambiándolo a la ruta SSH.
+
+### 2. Jerarquía de Configuraciones (Local vs Global)
+
+Commits para cuentas diferentes en una misma computadora.
+
+- Las configuraciones locales se imponen a las globales.
+- Estas configuraciones locales solo funcionan para el repositorio específico en el que se aplican.
+- Para hacer configuraciones locales, simplemente ejecutas los comandos dentro de la carpeta de tu repositorio sin usar la bandera `-global` (Ejemplo: `git config user.name "Mi nuevo Name"`).
+
+### 3. Múltiples Cuentas SSH
+
+Si tienes más de una cuenta de GitHub (ej. personal y otra del trabajo/universidad), necesitas generar un "túnel" independiente para que las llaves no choquen.
+
+- **Paso 1:** Generar la llave con un nombre diferente usando el comando `ssh-keygen -t ed25519 -C "micorreo@gmail.com" -f ~/.ssh/id_miname`. El parámetro `f` especifica el nombre del archivo para no sobreescribir tu llave principal.
+- **Paso 2:** Crear un archivo llamado `config` en la carpeta `~/.ssh/` para administrar qué llave usar. Dentro debes definir estos bloques:
+    - **Host:** Es el apodo o alias que le pones a la conexión (lo que escribirás después de `git@`).
+    - **HostName:** Es la dirección real del servidor, que para GitHub siempre será `github.com`.
+    - **User:** El nombre del usuario remoto, siempre debe ser `git`.
+    - **IdentityFile:** Es la ruta exacta hacia la llave privada que quieres usar para ese Host.
+- **Paso 3:** Verificar la conexión ejecutando `ssh -T git@<tu_nuevo_host>`.
+- **Importante:** Cuando clones un repositorio para esta segunda cuenta, no puedes usar la URL normal. Debes cambiarla en la terminal por tu nuevo Host: `git clone git@<tu_nuevo_host>:usuario/repo.git`.
+
+### 4. Git Checkout y el Estado "Detached HEAD"
+
+El comando `git checkout` permite desplazar el HEAD (tu "lector" actual) hacia un punto específico de la historia o a una rama distinta. Sirve para inspeccionar código antiguo, restaurar archivos borrados o experimentar.
+
+- **Viajar al pasado:** Usas `git checkout <hash_antiguo>` (el hash es el código del commit).
+- **Detached HEAD (Cabeza Desacoplada):** Al viajar a un commit específico, entras en este estado. Significa que el HEAD apunta directamente a un Commit fijo, no a una Rama.
+    - Eres solo un espectador en el pasado.
+    - Si haces cambios aquí y te vas al presente sin "encarnar" en una rama, tus cambios se pierden en el vacío.
+    - Si decides que quieres conservar los cambios experimentales que hiciste, debes ejecutar `git checkout -b rama_nueva`.
+- **Volver al presente:** Ejecutas `git checkout <rama>` (ej. `git checkout main`).
+- **Buenas prácticas:** Antes de viajar al pasado, debes limpiar tu directorio de trabajo asegurándote de haber hecho commit de tus cambios actuales; de lo contrario, Git no te dejará viajar.
+
+---
