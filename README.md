@@ -184,3 +184,11 @@ GitFlow es un marco de trabajo que establece reglas para usar las ramas de maner
     - **Regla:** Nacen de `develop`, y cuando se terminan, se fusionan de vuelta en `develop` y se eliminan. Jamás uses espacios en los nombres, usa guiones o barras bajas.
 - `release/*`: Se usa cuando preparas el lanzamiento de una nueva versión (fase de pruebas o QA). Nacen de `develop` y mueren en `main` y `develop`.
 - `hotfix/*`: Se usa para arreglar un error crítico o "incendio" directamente en producción. Nacen directo de `main` y, al arreglar el bug, mueren fusionándose en `main` y en `develop`.
+
+
+
+---
+> **Nota de práctica:** Este es un resumen experimental creado en una rama separada para practicar GitFlow.
+
+uwu
+---
