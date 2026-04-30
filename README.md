@@ -81,26 +81,28 @@ Es mejor configurar SSH para no tener que ingresar credenciales cada vez que hac
 - SSH: Es la forma recomendada. Generas una "llave" en tu computadora y la guardas en GitHub. Así, tu computadora y GitHub se reconocen automáticamente de forma segura y no tienes que poner contraseñas nunca más
 
 
-## Configurar tu Llave SSH
+### Configurar tu Llave SSH
 
 1. Generar la llave en la terminal: `ssh-keygen -t ed25519 -C "tu-correo@email.com"`. *Usar el mismo correo con el que te registraste en GitHub.*
 2. Ver la llave para copiarla: `cat ~/.ssh/id_ed25519.pub`.
 3. Pegarla en GitHub: Ve a *Settings > SSH and GPG Keys > New SSH Key*, ponle un nombre (ej. "Mi PC") y pégala.
 4. Probar la conexión: `ssh -T git@github.com`. (Debes escribir "yes" cuando te pregunte, y te saldrá un mensaje de éxito).
 
-## Conectar tu Repositorio Local con GitHub
+### Conectar tu Repositorio Local con GitHub
 Si ya tienes tu repositorio local (el de tus apuntes) y creaste uno vacío en GitHub, debes vincularlos con estos comandos:
 
 - Vincular el origen: `git remote add origin git@github.com:TuUser/TuRepo.git`
 - Asegurar que la rama se llame main: `git branch -M main`
 - Subir tus commits a la nube: `git push -u origin main`
 
-## Subir y Bajar Cambios
+### Subir y Bajar Cambios
 
 - Para enviar tus nuevos commits a la nube: `git push origin main`.
 - Para descargar cambios si alguien más (o tú en otra PC) modificó el repositorio en la nube: `git pull origin main`.
 
-## comentarios
+### comentarios
 - Solución a error HTTPS: Si clonaste un repo por error con HTTPS y te pide contraseña, puedes cambiarlo a SSH usando: git remote set-url origin "git@github.com:TuUser/TuRepo.git".
 - Límite de tamaño: El peso máximo de un archivo que puedes subir en un commit a GitHub es de 100 MB. Si intentas subir algo más pesado (como carpetas de node_modules o bases de datos), GitHub lo rechazará. Por eso es vital usar el .gitignore.
+
+
 
