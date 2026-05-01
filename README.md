@@ -235,3 +235,85 @@ Truco de la industria para no arruinar la rama principal (`develop`) al fusionar
     - Si hay conflictos, los resuelves ahí mismo, dentro de tu rama (donde si algo explota, solo te afecta a ti).
     - Una vez que tu rama funciona perfectamente con los cambios nuevos integrados, cambias a develop (`git switch develop`) y haces el merge definitivo: `git merge --no-ff <tu_rama>`.
 
+---
+## Clase 7
+
+### Flujo de Trabajo en Equipo
+
+Cómo fusionar el trabajo de varios integrantes si no tienen configuradas restricciones en GitHub.
+
+**El Flujo Completo (Paso a Paso):**
+
+1. **Actualizar todo antes de empezar:**`git checkout developgit fetch` (Busca si hay cambios en el servidor)`git pull origin develop` (Descarga los cambios)
+2. **Crear o ir a tu rama de trabajo:**`git switch -c feature/tu-rama` (o `git checkout -b feature/tu-rama`)
+3. **Trabajar y asegurar cambios:**
+    
+    `git add .`
+    
+    `git commit -m "feat: add user authentication"`
+    
+4. **La "Buena Práctica" Suprema antes del Merge:**
+Como pudiste tardar varios días, es posible que alguien más haya modificado `develop` mientras tanto. Para evitar dolores de cabeza y resolver conflictos en *tu* rama y no en la principal:
+    - Cambias a develop: `git checkout develop`
+    - Actualizas: `git fetch` y `git pull origin develop`
+    - Vuelves a tu rama: `git checkout feature/tu-rama`
+    - **Traes develop hacia ti:** `git merge develop` (Aquí resuelves conflictos si los hay)
+5. **El Merge Final (Seguro):**
+    - Ya que tu rama está actualizada y sin conflictos, cambias a `develop`: `git switch develop`
+    - Fusionas manteniendo el historial: `git merge --no-ff feature/tu-rama`
+    - Empujas a la nube: `git push origin develop`
+6. **Limpieza:** Eliminas tu rama local: `git branch -D feature/tu-rama`.
+
+---
+
+### Resolución de Conflictos (A Manito)
+
+Un conflicto surge cuando dos personas han modificado las mismas líneas exactas de un mismo archivo en ramas distintas. Git pausa la fusión y marca el archivo para que el humano lo revise.
+
+**¿Cómo se ve un conflicto en el código?**
+
+HTML
+
+`<<<<<<< HEAD (Tu código actual)
+<header><h1>Autores de la Web</h1></header>
+======= (Separador)
+<header><h1>Nuestros Creadores</h1></header>
+>>>>>>> feature/otra-rama (Código entrante que causa conflicto)`
+
+**Pasos para resolverlo:**
+
+1. Abres el archivo en tu editor de código o terminal (`nano`).
+2. Borras manualmente los símbolos extraños (`<<<<<<< HEAD`, `=======`, `>>>>>>>`).
+3. Decides qué código borrar, qué código mantener o cómo combinar ambas partes.
+4. Guardas el archivo y le dices a Git que ya está resuelto: `git add <archivo>`.
+5. Finalizas ejecutando `git commit` sin mensaje (Git abrirá el editor para que guardes el mensaje de merge automático).
+
+---
+
+### 4. Flujo de Trabajo Profesional: Los Pull Requests (PRs)
+
+Los PRs son la forma profesional de trabajar con Git/GitHub. Crean una solicitud formal en GitHub para unir el código de tu rama (`feature`) a la rama base (`develop`), permitiendo que tus compañeros vean qué quieres fusionar antes de aceptarlo.
+
+**¿Por qué usar Pull Requests? (Pregunta de Examen)**
+Se usan por temas de seguridad. Limitan la colaboración, obligan al debate/deliberación y evitan que cualquier persona pueda subir código malicioso o inestable directamente a la rama principal sin que el resto del equipo lo revise y lo apruebe.
+
+### ¿Cómo configurar GitHub para requerir PRs? (Protección de Ramas)
+
+El administrador del repositorio debe hacer lo siguiente para bloquear fusiones directas:
+
+1. Ir a **Settings > Branches** y añadir un *Rule Set*.
+2. En **Target Branch**, incluir las ramas a proteger (ej. `~default` y `develop`).
+3. Activar la opción: **Require a pull request before merging**.
+4. Configurar la cantidad de aprobaciones necesarias (ej. requerir la aprobación de 3 miembros de un equipo de 4).
+
+### ¿Cómo crear un Pull Request? (Paso a Paso)
+
+1. Has terminado tu trabajo y subes tu rama a GitHub: `git push -u origin feature/tu-rama`.
+2. Entras a la página de tu repositorio en `github.com`.
+3. Te aparecerá un botón verde que dice **"Compare & pull request"**. Si no sale, ve a la pestaña *Pull requests* y dale a *New pull request*.
+4. Configuras las ramas: **base:** `develop` (a dónde quieres fusionar) `<--` **compare:** `feature/tu-rama` (de dónde viene tu código).
+5. Escribes un título descriptivo y un comentario explicando detalladamente qué cambios hiciste.
+6. Le das a **Create pull request**.
+
+---
+Notas con apoyo de gemini , basicamente le di los comandos usados en clase y los apuntes y me ayudo a estructurarlo
