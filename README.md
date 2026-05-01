@@ -185,10 +185,53 @@ GitFlow es un marco de trabajo que establece reglas para usar las ramas de maner
 - `release/*`: Se usa cuando preparas el lanzamiento de una nueva versión (fase de pruebas o QA). Nacen de `develop` y mueren en `main` y `develop`.
 - `hotfix/*`: Se usa para arreglar un error crítico o "incendio" directamente en producción. Nacen directo de `main` y, al arreglar el bug, mueren fusionándose en `main` y en `develop`.
 
+## clase 6
 
+### Fetch vs. Pull
+
+**SIEMPRE** se deben ejecutar estos comandos antes de subir o fusionar cambios:
+
+- `git fetch`: Es como el "vecino chismoso". Va al servidor remoto (GitHub) y revisa si alguien más subió cambios a la rama (ej. `develop`). **No descarga los cambios**, solo te informa si el servidor está más adelantado que tu código local.
+- `git pull origin <rama>`: Este comando **sí descarga e integra** los cambios del repositorio remoto a tu computadora.
+- **Regla de Oro:** Si vas a integrar tu trabajo, siempre haz `git fetch` seguido de `git pull origin develop` para no generar conflictos catastróficos con el trabajo de tus compañeros.
+
+### Git Merge y el "No Fast Forward"
+
+- `git merge --no-ff <rama>`: El comando `-no-ff` (No Fast Forward) fuerza a Git a crear un *commit* de fusión.
+- **¿Por qué es obligatorio usarlo?** Si no lo usas, Git "aplana" el historial (Fast Forward) y hace parecer que tu rama secundaria nunca existió. Usar `-no-ff` mantiene la "burbuja" visual en el gráfico (`git log --graph`), lo cual es vital para la auditoría y para que el Auxi vea que realmente creaste y trabajaste en una rama separada.
+- **Limpieza:** Después de hacer el merge exitosamente, siempre debes eliminar la rama local con `git branch -D <rama>` (Min 18:33).
+
+### Jerarquía de Configuraciones: Local vs. Global
+
+- **Configuración Global** (`git config --global user.name`): Se aplica a todos los repositorios de tu computadora.
+- **Configuración Local** (`git config user.name` sin `-global`): Se aplica **únicamente** al repositorio en el que estás trabajando.
+- **Pregunta de Examen:** **La configuración Local siempre tiene prioridad sobre la Global.** Si configuras un usuario localmente, Git ignorará el global para esa carpeta. Es útil cuando tienes una cuenta del trabajo y una personal en la misma PC.
 
 ---
-> **Nota de práctica:** Este es un resumen experimental creado en una rama separada para practicar GitFlow.
 
-uwu
+### Resolución de Conflictos
+
+Un conflicto ocurre cuando dos personas modifican las mismas líneas exactas de un archivo y Git no sabe cuál versión conservar.
+
+**¿Cómo identificar y solucionar el conflicto?**
+
+1. Git marcará el archivo con error y pondrá símbolos extraños en tu código:
+    - `<<<<<<< HEAD`: Indica el inicio del código que tú tienes actualmente.
+    - `=======`: Es el separador. Divide tu código del código que viene de la otra rama.
+    - `>>>>>>> <nombre_de_la_rama>`: Indica el fin del código entrante.
+2. **Solución Manual:** Debes abrir el archivo, leer ambas partes y borrar manualmente el código que no sirve, junto con los símbolos de Git (`<<<`, `===`, `>>>`).
+3. **Finalizar el Merge:** Una vez que el archivo esté limpio y guardado, ejecutas `git add <archivo>` y luego `git commit` (sin `m`) para que Git genere automáticamente el mensaje de resolución de conflicto (Min 32:50).
+
 ---
+
+### La "Buena Práctica" Suprema para Mergear
+
+Truco de la industria para no arruinar la rama principal (`develop`) al fusionar:
+
+1. **NO fusiones directamente en `develop`:** Si tu rama (`feature`) es muy antigua, fusionarla en `develop` puede causar errores en código que tú ni siquiera tocaste.
+2. **El método seguro:**
+    - Estando en tu rama (`feature`), trae los cambios recientes: `git fetch` y `git pull origin develop`.
+    - Haz el merge de `develop` **HACIA** tu rama: `git merge develop`.
+    - Si hay conflictos, los resuelves ahí mismo, dentro de tu rama (donde si algo explota, solo te afecta a ti).
+    - Una vez que tu rama funciona perfectamente con los cambios nuevos integrados, cambias a develop (`git switch develop`) y haces el merge definitivo: `git merge --no-ff <tu_rama>`.
+
