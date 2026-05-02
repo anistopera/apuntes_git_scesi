@@ -314,6 +314,39 @@ El administrador del repositorio debe hacer lo siguiente para bloquear fusiones 
 4. Configuras las ramas: **base:** `develop` (a dónde quieres fusionar) `<--` **compare:** `feature/tu-rama` (de dónde viene tu código).
 5. Escribes un título descriptivo y un comentario explicando detalladamente qué cambios hiciste.
 6. Le das a **Create pull request**.
-
 ---
-Notas con apoyo de gemini , basicamente le di los comandos usados en clase y los apuntes y me ayudo a estructurarlo
+## Clase 8
+
+### ¿Qué hacer cuando se aprueba un PR distinto al mío que tocó algo que yo toqué?
+Si un compañero fusiona un *Pull Request* que modifica un archivo que tú también estabas modificando en tu rama, tu PR automáticamente mostrará un error de **"Merge Conflict"**.
+
+- **Solución:** Debes hacer `git fetch` y `git pull origin develop` estando en la rama `develop`. Luego, vuelves a tu rama de trabajo (`feature`), haces `git merge develop` hacia tu rama, resuelves los conflictos manualmente en tu editor borrando el código sobrante, haces `git add`, `git commit` y vuelves a hacer `git push`. Tu PR en GitHub se actualizará y ya permitirá el merge.
+
+### Guardado Temporal: El comando `git stash`
+
+Sirve para guardar cambios temporalmente sin hacer un *commit* oficial. Es útil si necesitas cambiar de rama pero Git te lo impide porque tienes archivos modificados sin guardar.
+
+- `git stash -m "mensaje"`: Guarda tus cambios actuales en un espacio temporal con un mensaje descriptivo y limpia tu directorio de trabajo.
+- `git stash list`: Muestra una lista de todos los cambios temporales que tienes guardados.
+- `git stash pop`: Extrae los últimos cambios guardados en el *stash* y los devuelve a tu directorio de trabajo, eliminándolos de la lista temporal.
+
+### Buenas prácticas al mergear
+
+- **Borrar la rama:** Inmediatamente después de fusionar (mergear) un *Pull Request*, es una buena práctica ejecutar `git branch -D <rama>` localmente para mantener el repositorio limpio y no acumular ramas muertas.
+
+**D. Visualización de diferencias: El comando `git diff`**
+Sirve para ver exactamente qué líneas de código se agregaron (en verde) o se eliminaron (en rojo).
+
+- `git diff`: Muestra los cambios en los archivos de tu directorio de trabajo que **aún no** has preparado (`untracked` o `modified`).
+- `git diff --staged <archivo>`: Muestra los cambios específicos de un archivo que ya fue agregado al *Stage Area* (después de `git add`).
+- `git diff <rama1> <rama2>`: Compara dos ramas distintas y te muestra todas las diferencias de código entre ellas (ej. `git diff develop feature/nivel4`).
+
+
+
+### 💡 3. Tips Extras Mencionados en Clase
+
+- **Imágenes en Markdown:** Para poner tu foto en el `README.md`, crea una carpeta `images/` en tu repositorio. Sube ahí la foto y referénciala con rutas relativas: `![Mi Foto](./images/foto.jpg)`.
+- **Carpetas Vacías:** Git no rastrea carpetas vacías por defecto. Si necesitas subir una carpeta `assets/` o `images/` que aún no tiene fotos, crea un archivo llamado `.gitkeep` (o `.git`) adentro de la carpeta y hazle *commit*.
+- **Commits Multilínea:** Si te equivocas haciendo un *commit* y quieres hacer uno detallado con título y descripción, usa simplemente `git commit`. Se abrirá un editor (como Nano o Vim) donde la primera línea es el título (máximo 50 caracteres), dejas la segunda línea en blanco, y desde la tercera escribes la descripción completa.
+---
+Notas con apoyo de gemini , le mande el material de la clase y le pedi que me haga un resumen con su funcion y concepto 
